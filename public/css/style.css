@@ -1,0 +1,4 @@
+
+.suggestion-btn {
+    @apply bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors duration-200;
+}

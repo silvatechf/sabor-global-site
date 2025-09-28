@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sabor Global | Receitas Nutricionais</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-green': '#10B981',
+                        'secondary-blue': '#3B82F6',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <header class="bg-white shadow-lg sticky top-0 z-20">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <h1 class="text-3xl font-extrabold text-primary-green tracking-tight">Sabor Global</h1>
+                
+                <nav class="hidden md:flex items-center gap-6">
+                    <a href="#" class="text-gray-600 hover:text-primary-green font-medium transition duration-150">Home</a>
+                    <button id="navFilterButton" class="text-gray-600 hover:text-primary-green font-medium transition duration-150">Filtros Avançados</button>
+                </nav>
+
+                <div class="md:hidden">
+                    <button id="hamburger-button" class="text-gray-600 hover:text-primary-green focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="mobile-menu" class="md:hidden hidden pb-4">
+                <a href="#" class="block text-gray-600 hover:text-primary-green font-medium py-2">Home</a>
+                <button id="mobileNavFilterButton" class="block text-gray-600 hover:text-primary-green font-medium py-2 text-left w-full">Filtros Avançados</button>
+            </div>
+        </div>
+    </header>
+    <section id="featured-recipe-section" class="mb-16 hidden">
+            <h3 class="text-3xl font-bold text-gray-800 border-b-4 border-primary-green pb-2 inline-block mb-8">Receita em Destaque</h3>
+            <div id="featured-recipe-container" class="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row items-center">
+                </div>
+        </section>
+        
+        <div class="flex justify-between items-center mb-8">
+            <h3 class="text-3xl font-bold text-gray-800 border-b-4 border-primary-green pb-2 inline-block">Resultados da Busca</h3>
+            </div>
+            <div id="active-filters-container" class="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg hidden">
+        </div>
+
+    <section class="relative py-24 bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-xl overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-20"></div>
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h2 class="text-5xl font-extrabold mb-4 tracking-tight">Descubra Receitas com Nutrição Transparente</h2>
+            <p class="text-xl max-w-3xl mx-auto opacity-90 mb-10">Filtre por ingredientes, dietas e controle suas calorias de forma simples e visual.</p>
+            <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-2 bg-white/20 p-2 rounded-xl backdrop-blur-sm border border-white/30 shadow-2xl">
+                <input type="text" id="searchInput" placeholder="Ex: Frango low-carb, vegan dinner, salmão..." 
+                       class="flex-grow p-4 text-gray-800 border-none rounded-lg focus:ring-4 focus:ring-blue-300 transition duration-300">
+                <button id="searchButton" 
+                        class="bg-secondary-blue hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-lg transition duration-300 transform hover:scale-[1.02] shadow-lg">
+                    <span class="md:hidden">Buscar</span>
+                    <span class="hidden md:inline">Pesquisar Receita</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <main class="container mx-auto px-4 py-16">
+        <div class="flex justify-between items-center mb-8">
+            <h3 class="text-3xl font-bold text-gray-800 border-b-4 border-primary-green pb-2 inline-block">Resultados da Busca</h3>
+            <button id="toggleFilterButton" class="bg-gray-200 text-gray-700 font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-300 transition duration-300 flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414A1 1 0 0012 15.586V21a1 1 0 01-1 1H4a1 1 0 01-1-1v-2.586a1 1 0 00-.293-.707l-6.414-6.414A1 1 0 013 6.586V4z"></path></svg>
+                Filtros Avançados
+            </button>
+        </div>
+        
+        <div id="filterPanel" class="mb-10 bg-white p-6 rounded-xl shadow-lg border border-gray-200 hidden">
+            <h4 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Configurações Nutricionais e de Dieta</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label for="maxCalories" class="block text-sm font-medium text-gray-700 mb-2">Calorias Máximas:</label>
+                    <input type="number" id="maxCalories" placeholder="Ex: 500" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary-green focus:border-primary-green">
+                    <p class="mt-1 text-xs text-gray-500">Por porção.</p>
+                </div>
+                <div>
+                    <label for="dietType" class="block text-sm font-medium text-gray-700 mb-2">Tipo de Dieta:</label>
+                    <select id="dietType" class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-primary-green focus:border-primary-green">
+                        <option value="">Qualquer Dieta</option>
+                        <option value="balanced">Balanceada</option>
+                        <option value="high-protein">Rica em Proteína</option>
+                        <option value="low-fat">Pobre em Gordura</option>
+                        <option value="low-carb">Low-Carb</option>
+                        <option value="vegan">Vegana</option>
+                        <option value="vegetarian">Vegetariana</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="healthType" class="block text-sm font-medium text-gray-700 mb-2">Restrições / Alergias:</label>
+                    <select id="healthType" class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-primary-green focus:border-primary-green">
+                        <option value="">Sem Restrições</option>
+                        <option value="alcohol-free">Sem Álcool</option>
+                        <option value="gluten-free">Sem Glúten</option>
+                        <option value="lactose-free">Sem Lactose</option>
+                        <option value="peanut-free">Sem Amendoim</option>
+                        <option value="sugar-conscious">Baixo Açúcar</option>
+                    </select>
+                </div>
+                <div class="md:col-span-3">
+                    <label for="cuisineType" class="block text-sm font-medium text-gray-700 mb-2">Tipo de Culinária:</label>
+                    <select id="cuisineType" class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-primary-green focus:border-primary-green">
+                        <option value="">Qualquer Culinária</option>
+                        <option value="American">Americana</option>
+                        <option value="Asian">Asiática</option>
+                        <option value="Brazilian">Brasileira</option>
+                        <option value="French">Francesa</option>
+                        <option value="Indian">Indiana</option>
+                        <option value="Italian">Italiana</option>
+                        <option value="Japanese">Japonesa</option>
+                        <option value="Mediterranean">Mediterrânea</option>
+                        <option value="Mexican">Mexicana</option>
+                        <option value="South American">Sul-Americana</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-8 text-right">
+                <button id="applyFiltersButton" class="bg-primary-green hover:bg-green-600 text-white font-semibold py-3 px-8 rounded-lg transition duration-300 shadow-lg">
+                    Aplicar Filtros e Buscar
+                </button>
+            </div>
+        </div>
+
+        <div id="recipesContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            </div>
+
+        <div id="loadMoreArea" class="mt-12 text-center">
+            <button id="loadMoreButton" class="bg-secondary-blue hover:bg-blue-700 text-white font-semibold py-3 px-10 rounded-xl transition duration-300 shadow-xl hidden" data-next-url="">
+                Carregar Mais Receitas
+            </button>
+            <p id="loadingMore" class="text-primary-green text-lg font-semibold mt-4 hidden">Carregando...</p>
+        </div>
+        
+        <p id="messageArea" class="text-center text-gray-600 text-xl font-medium mt-20 hidden">
+            Nenhuma receita encontrada. Tente outra busca!
+        </p>
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-20">
+        <div class="container mx-auto px-4 py-8 text-center">
+            <p class="text-sm opacity-80">&copy; 2025 Sabor Global. Nutrição e Culinária Mundial.</p>
+            <p class="text-xs opacity-60 mt-2">
+                Dados Nutricionais fornecidos por 
+                <a href="https://developer.edamam.com/attribution" target="_blank" class="underline hover:text-primary-green">Edamam API</a>.
+            </p>
+        </div>
+    </footer>
+
+    <script src="config.js"></script> 
+    <script src="js/script.js"></script>
+</body>
+</html>
