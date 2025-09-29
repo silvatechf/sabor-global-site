@@ -1,14 +1,13 @@
-// Arquivo: /api/recipes.js
+
 
 export default async function handler(request, response) {
-  // --- INÍCIO DO CÓDIGO DE DEBUG ---
-  // Vamos pedir para a função imprimir nos logs o que ela está recebendo.
+
   console.log("--- DEBUGANDO VARIÁVEIS DE AMBIENTE ---");
   console.log("API_ID recebido:", process.env.API_ID);
   console.log("API_KEY recebido (primeiros 5 chars):", process.env.API_KEY?.substring(0, 5)); // Por segurança, nunca exibimos a chave completa.
   console.log("USER_ID recebido:", process.env.USER_ID);
   console.log("--- FIM DO DEBUG ---");
-  // --- FIM DO CÓDIGO DE DEBUG ---
+
 
   const API_ID = process.env.API_ID;
   const API_KEY = process.env.API_KEY;
