@@ -1,12 +1,19 @@
 // Arquivo: /api/recipes.js
 
 export default async function handler(request, response) {
-  // Pega as chaves secretas que vamos configurar na Vercel
+  // --- INÍCIO DO CÓDIGO DE DEBUG ---
+  // Vamos pedir para a função imprimir nos logs o que ela está recebendo.
+  console.log("--- DEBUGANDO VARIÁVEIS DE AMBIENTE ---");
+  console.log("API_ID recebido:", process.env.API_ID);
+  console.log("API_KEY recebido (primeiros 5 chars):", process.env.API_KEY?.substring(0, 5)); // Por segurança, nunca exibimos a chave completa.
+  console.log("USER_ID recebido:", process.env.USER_ID);
+  console.log("--- FIM DO DEBUG ---");
+  // --- FIM DO CÓDIGO DE DEBUG ---
+
   const API_ID = process.env.API_ID;
   const API_KEY = process.env.API_KEY;
   const USER_ID = process.env.USER_ID;
 
-  // Monta a URL da Edamam, repassando os parâmetros de busca (q, diet, etc.)
   const queryString = request.url.split('?')[1];
   const edamamURL = `https://api.edamam.com/api/recipes/v2?${queryString}`;
 
@@ -24,7 +31,6 @@ export default async function handler(request, response) {
     }
 
     const data = await apiResponse.json();
-    // Retorna a resposta da Edamam para o nosso site
     return response.status(200).json(data);
 
   } catch (error) {
