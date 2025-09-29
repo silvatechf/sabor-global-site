@@ -1,9 +1,7 @@
-// js/script.js
 
-// A URL agora aponta para nossa função segura que será hospedada na Vercel
 const API_URL = '/api/recipes';
 
-// Objeto com todos os elementos do DOM que usamos
+
 const elements = {
     searchInput: document.getElementById('searchInput'),
     searchButton: document.getElementById('searchButton'),
@@ -27,12 +25,12 @@ const elements = {
     activeFiltersContainer: document.getElementById('active-filters-container'),
 };
 
-// --- FUNÇÕES DE NOVAS FUNCIONALIDADES ---
+
 
 async function fetchRecipeOfTheDay() {
     const featuredQueries = ["prato principal gourmet", "almoço brasileiro popular", "sobremesa impressionante", "jantar especial", "receita fácil e rápida"];
     const randomQuery = featuredQueries[Math.floor(Math.random() * featuredQueries.length)];
-    // A chamada agora também usa nossa API segura
+    
     const url = `${API_URL}?type=public&q=${encodeURIComponent(randomQuery)}&random=true`;
 
     try {
@@ -113,7 +111,6 @@ function resetFilters() {
 }
 
 
-// --- FUNÇÕES PRINCIPAIS ---
 
 function getFilterParams() {
     const params = new URLSearchParams();
@@ -296,7 +293,7 @@ function handlePagination(nextUrl) {
     }
 }
 
-// --- EVENT LISTENERS ---
+
 
 function toggleFilterPanel() {
     elements.filterPanel.classList.toggle('hidden');
