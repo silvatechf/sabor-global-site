@@ -1,0 +1,6 @@
+# Ignorar variáveis de ambiente locais
+.env.local
+
+# Ignorar pastas do sistema
+node_modules
+.vercel
