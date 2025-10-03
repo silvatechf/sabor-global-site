@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,6 +76,39 @@
                     <span class="hidden md:inline">Pesquisar Receita</span>
                 </button>
             </div>
+        </div>
+    </section>
+
+    <section id="collections-section" class="container mx-auto px-4 py-16">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-extrabold text-gray-800">Coleções Especiais</h2>
+            <p class="text-lg text-gray-600 mt-2">Receitas selecionadas a dedo para inspirar você.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <a href="#" class="collection-card relative rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300 block" 
+               data-search-query="low-carb dinner">
+                <img src="https://images.unsplash.com/photo-1540420773420-2850a43d24a7?q=80&w=2070&auto=format&fit=crop" 
+                     alt="Prato de comida low-carb" class="w-full h-80 object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 p-8 text-white">
+                    <h3 class="text-3xl font-bold">Jantar Low-Carb</h3>
+                    <p class="mt-2 opacity-90">5 ideias de receitas com poucos carboidratos para a sua sexta-feira.</p>
+                    <span class="mt-4 inline-block font-semibold bg-primary-green py-2 px-4 rounded-lg">Ver Receitas &rarr;</span>
+                </div>
+            </a>
+            
+            <a href="#" class="collection-card relative rounded-xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300 block" 
+               data-search-query="vegetarian">
+                <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=2070&auto=format&fit=crop" 
+                     alt="Prato de comida vegetariana" class="w-full h-80 object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 p-8 text-white">
+                    <h3 class="text-3xl font-bold">Seleção Vegetariana</h3>
+                    <p class="mt-2 opacity-90">As melhores receitas vegetarianas encontradas no Sabor Global.</p>
+                    <span class="mt-4 inline-block font-semibold bg-primary-green py-2 px-4 rounded-lg">Ver Receitas &rarr;</span>
+                </div>
+            </a>
         </div>
     </section>
 

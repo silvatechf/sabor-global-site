@@ -1,5 +1,38 @@
-
 const API_URL = '/api/recipes';
+
+const dicionarioDeRotulos = {
+    // Rótulos de Dieta
+    "Balanced": "Balanceada",
+    "High-Protein": "Rica em Proteína",
+    "Low-Fat": "Baixa Gordura",
+    "Low-Carb": "Low-Carb",
+    "Vegan": "Vegana",
+    "Vegetarian": "Vegetariana",
+
+    // Rótulos de Saúde e Alergia
+    "Alcohol-Free": "Sem Álcool",
+    "Gluten-Free": "Sem Glúten",
+    "Lactose-Free": "Sem Lactose",
+    "Peanut-Free": "Sem Amendoim",
+    "Sugar-Conscious": "Baixo Açúcar",
+    "Kidney-Friendly": "Bom para os Rins",
+    "Low Potassium": "Baixo Potássio",
+    "Low Sodium": "Baixo Sódio",
+    "Dairy-Free": "Sem Laticínios",
+    "Wheat-Free": "Sem Trigo",
+
+    // Tipos de Cozinha
+    "American": "Americana",
+    "Asian": "Asiática",
+    "Brazilian": "Brasileira",
+    "French": "Francesa",
+    "Indian": "Indiana",
+    "Italian": "Italiana",
+    "Japanese": "Japonesa",
+    "Mediterranean": "Mediterrânea",
+    "Mexican": "Mexicana",
+    "South American": "Sul-Americana"
+};
 
 
 const elements = {
@@ -241,7 +274,12 @@ function renderRecipes(hits, clearContainer = true) {
     const recipesHtml = hits.map(hit => {
         const { recipe } = hit;
         const servings = recipe.yield || 'N/A';
-        const cuisine = recipe.cuisineType?.[0].replace(/\b\w/g, l => l.toUpperCase()) || 'Global';
+        
+        // --- INÍCIO DA CORREÇÃO ---
+        const cuisineOriginal = recipe.cuisineType?.[0].replace(/\b\w/g, l => l.toUpperCase()) || 'Global';
+        const cuisineTraduzida = dicionarioDeRotulos[cuisineOriginal] || cuisineOriginal;
+        // --- FIM DA CORREÇÃO ---
+
         const allLabels = [...recipe.dietLabels, ...recipe.healthLabels];
         const uniqueLabels = [...new Set(allLabels)].filter(label => !['mediterranean'].includes(label.toLowerCase()));
         const displayLabels = uniqueLabels.slice(0, 3);
@@ -266,7 +304,7 @@ function renderRecipes(hits, clearContainer = true) {
                         </div>
                         <div class="flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 4.629 7.973 4 10 4c2.027 0 3.488.629 4.756 1.321a6.012 6.012 0 011.912 2.706C17.37 9.488 18 11.227 18 13c0 1.773-.63 3.512-1.668 4.973a6.01 6.01 0 01-2.706 1.912C12.512 20.37 11.027 21 9 21c-2.027 0-3.488-.629-4.756-1.321a6.01 6.01 0 01-2.706-1.912C.63 16.512 0 14.773 0 13c0-1.773.63-3.512 1.668-4.973z" clip-rule="evenodd" /></svg>
-                            <span class="font-medium">${cuisine}</span>
+                            <span class="font-medium">${cuisineTraduzida}</span>
                         </div>
                     </div>
                     <div class="text-center mb-4">
@@ -274,7 +312,12 @@ function renderRecipes(hits, clearContainer = true) {
                         <p class="text-sm font-medium text-gray-500 -mt-1">Kcal / porção</p>
                     </div>
                     <div class="flex-grow flex flex-wrap gap-2 items-center mb-4">
-                        ${displayLabels.map(label => `<span class="text-xs font-semibold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">${label.replace(/-/g, ' ')}</span>`).join('')}
+                        ${displayLabels.map(label => {
+                            // --- INÍCIO DA CORREÇÃO ---
+                            const labelTraduzida = dicionarioDeRotulos[label] || label;
+                            return `<span class="text-xs font-semibold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">${labelTraduzida.replace(/-/g, ' ')}</span>`;
+                            // --- FIM DA CORREÇÃO ---
+                        }).join('')}
                     </div>
                     <a href="${recipe.url}" target="_blank" class="mt-auto w-full text-center bg-secondary-blue text-white py-2.5 rounded-lg hover:bg-blue-600 transition font-semibold shadow-md hover:shadow-lg">Ver Receita</a>
                 </div>
@@ -329,4 +372,17 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.searchInput.value = randomTerm;
     performSearch();
     fetchRecipeOfTheDay();
+    const collectionCards = document.querySelectorAll('.collection-card');
+    collectionCards.forEach(card => {
+        card.addEventListener('click', (event) => {
+            event.preventDefault(); // Impede que o link padrão (#) funcione
+            
+            const query = card.dataset.searchQuery; // Pega a busca do atributo "data-search-query"
+            elements.searchInput.value = query; // Coloca o texto da busca no campo de pesquisa
+            performSearch(); // Executa a busca
+            
+            // Rola a página suavemente até os resultados
+            document.getElementById('recipesContainer').scrollIntoView({ behavior: 'smooth' });
+        });
+    });
 });
