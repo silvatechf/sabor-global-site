@@ -2,3 +2,8 @@
 .suggestion-btn {
     @apply bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors duration-200;
 }
+/* Estilo para o botão de favorito quando a receita está salva */
+.favorite-btn.favorited svg {
+    fill: #EF4444; /* Um tom de vermelho */
+    color: #EF4444;
+}
