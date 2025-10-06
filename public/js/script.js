@@ -1,3 +1,4 @@
+
 const API_URL = '/api/recipes';
 
 const dicionarioDeRotulos = {
@@ -61,13 +62,58 @@ function renderFeaturedRecipe(recipe) {
     elements.featuredRecipeSection.classList.remove('hidden');
 }
 
-function updateActiveFiltersUI() { /* ... Seu código original ... */ }
-function resetFilters() { /* ... Seu código original ... */ }
-function getFilterParams() { /* ... Seu código original ... */ }
+function updateActiveFiltersUI() {
+    const activeFilters = [];
+    if (elements.maxCalories.value) activeFilters.push(`Até ${elements.maxCalories.value} kcal`);
+    if (elements.dietType.value) activeFilters.push(elements.dietType.options[elements.dietType.selectedIndex].text);
+    if (elements.healthType.value) activeFilters.push(elements.healthType.options[elements.healthType.selectedIndex].text);
+    if (elements.cuisineType.value) activeFilters.push(elements.cuisineType.options[elements.cuisineType.selectedIndex].text);
+    if (activeFilters.length > 0) {
+        let filtersHtml = '<div class="flex flex-wrap items-center gap-4"><span class="font-bold text-gray-700">Filtros Ativos:</span>';
+        activeFilters.forEach(filter => { filtersHtml += `<span class="bg-blue-200 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">${filter}</span>`; });
+        filtersHtml += `<button id="reset-filters-button" class="text-sm text-red-600 hover:underline font-bold ml-auto">Limpar Filtros</button></div>`;
+        elements.activeFiltersContainer.innerHTML = filtersHtml;
+        elements.activeFiltersContainer.classList.remove('hidden');
+        document.getElementById('reset-filters-button').addEventListener('click', resetFilters);
+    } else {
+        elements.activeFiltersContainer.innerHTML = '';
+        elements.activeFiltersContainer.classList.add('hidden');
+    }
+}
+
+function resetFilters() {
+    elements.maxCalories.value = '';
+    elements.dietType.value = '';
+    elements.healthType.value = '';
+    elements.cuisineType.value = '';
+    performSearch();
+}
+
+function getFilterParams() {
+    const params = new URLSearchParams();
+    const maxCalories = parseInt(elements.maxCalories.value.trim(), 10);
+    if (!isNaN(maxCalories) && maxCalories > 0) {
+        params.append('calories', `0-${maxCalories}`);
+    }
+    if (elements.dietType.value) {
+        params.append('diet', elements.dietType.value);
+    }
+    if (elements.healthType.value) {
+        params.append('health', elements.healthType.value);
+    }
+    if (elements.cuisineType.value) {
+        params.append('cuisineType', elements.cuisineType.value);
+    }
+    return params;
+}
 
 async function fetchRecipes(url, isNewSearch = true) {
     if (isNewSearch) {
-        elements.recipesContainer.innerHTML = '<div class="col-span-full text-center p-12">Carregando receitas...</div>';
+        let skeletonHTML = '';
+        for (let i = 0; i < 8; i++) {
+            skeletonHTML += `<div class="bg-white rounded-2xl shadow-lg flex flex-col border animate-pulse"><div class="bg-gray-300 w-full h-48 rounded-t-2xl"></div><div class="p-5"><div class="bg-gray-300 h-6 w-3/4 rounded-md mb-4"></div><div class="bg-gray-200 h-4 w-1/2 rounded-md mb-4"></div><div class="bg-gray-200 h-10 w-full rounded-md"></div></div></div>`;
+        }
+        elements.recipesContainer.innerHTML = skeletonHTML;
         elements.loadMoreButton.classList.add('hidden');
     } else {
         elements.loadingMore.classList.remove('hidden');
@@ -93,6 +139,7 @@ async function fetchRecipes(url, isNewSearch = true) {
 function performSearch() {
     const query = elements.searchInput.value.trim();
     if (!query) return;
+    updateActiveFiltersUI();
     const filterParams = getFilterParams();
     const finalUrl = `${API_URL}?type=public&q=${encodeURIComponent(query)}&${filterParams.toString()}`;
     fetchRecipes(finalUrl, true);
@@ -158,7 +205,11 @@ function handlePagination(nextUrl) {
     }
 }
 
-function toggleFilterPanel() { /* ... Seu código original ... */ }
+function toggleFilterPanel() {
+    elements.filterPanel.classList.toggle('hidden');
+}
+
+// --- Event Listeners ---
 elements.toggleFilterButton.addEventListener('click', toggleFilterPanel);
 elements.navFilterButton.addEventListener('click', toggleFilterPanel);
 elements.mobileNavFilterButton.addEventListener('click', () => { toggleFilterPanel(); elements.mobileMenu.classList.add('hidden'); });
@@ -175,7 +226,6 @@ elements.loadMoreButton.addEventListener('click', (e) => {
     }
 });
 
-// Listener para os botões de favorito
 elements.recipesContainer.addEventListener('click', (event) => {
     const favoriteButton = event.target.closest('.favorite-btn');
     if (favoriteButton) {
