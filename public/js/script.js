@@ -275,10 +275,8 @@ function renderRecipes(hits, clearContainer = true) {
         const { recipe } = hit;
         const servings = recipe.yield || 'N/A';
         
-        // --- INÍCIO DA CORREÇÃO ---
         const cuisineOriginal = recipe.cuisineType?.[0].replace(/\b\w/g, l => l.toUpperCase()) || 'Global';
         const cuisineTraduzida = dicionarioDeRotulos[cuisineOriginal] || cuisineOriginal;
-        // --- FIM DA CORREÇÃO ---
 
         const allLabels = [...recipe.dietLabels, ...recipe.healthLabels];
         const uniqueLabels = [...new Set(allLabels)].filter(label => !['mediterranean'].includes(label.toLowerCase()));
@@ -313,10 +311,8 @@ function renderRecipes(hits, clearContainer = true) {
                     </div>
                     <div class="flex-grow flex flex-wrap gap-2 items-center mb-4">
                         ${displayLabels.map(label => {
-                            // --- INÍCIO DA CORREÇÃO ---
                             const labelTraduzida = dicionarioDeRotulos[label] || label;
                             return `<span class="text-xs font-semibold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">${labelTraduzida.replace(/-/g, ' ')}</span>`;
-                            // --- FIM DA CORREÇÃO ---
                         }).join('')}
                     </div>
                     <a href="${recipe.url}" target="_blank" class="mt-auto w-full text-center bg-secondary-blue text-white py-2.5 rounded-lg hover:bg-blue-600 transition font-semibold shadow-md hover:shadow-lg">Ver Receita</a>
@@ -329,13 +325,15 @@ function renderRecipes(hits, clearContainer = true) {
 
 function handlePagination(nextUrl) {
     if (nextUrl) {
-        elements.loadMoreButton.dataset.nextUrl = nextUrl;
+        // Extrai apenas os parâmetros (tudo depois do "?") do link completo
+        const queryString = nextUrl.split('?')[1];
+        elements.loadMoreButton.dataset.nextQuery = queryString; // Salva apenas os parâmetros
         elements.loadMoreButton.classList.remove('hidden');
     } else {
         elements.loadMoreButton.classList.add('hidden');
+        elements.loadMoreButton.dataset.nextQuery = ""; // Limpa os parâmetros
     }
 }
-
 
 
 function toggleFilterPanel() {
@@ -359,29 +357,31 @@ elements.hamburgerButton.addEventListener('click', () => {
     elements.mobileMenu.classList.toggle('hidden');
 });
 
+// --- INÍCIO DA CORREÇÃO ---
 elements.loadMoreButton.addEventListener('click', (e) => {
-    const nextUrl = e.currentTarget.dataset.nextUrl;
-    if (nextUrl) {
-        fetchRecipes(nextUrl, false);
-    }
+    const nextQuery = e.currentTarget.dataset.nextQuery; 
+    if (nextQuery) {
+        const localApiUrl = `${API_URL}?${nextQuery}`;
+        fetchRecipes(localApiUrl, false); 
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const initialSearches = ["Frango", "Salada", "Sopa", "Carne assada", "Receitas fáceis", "Peixe", "Macarrão"];
+    const initialSearches = ["chicken","fish", "Salada", "Sopa", "Carne", "Meat", "Peixe", "pasta"];
     const randomTerm = initialSearches[Math.floor(Math.random() * initialSearches.length)];
     elements.searchInput.value = randomTerm;
     performSearch();
     fetchRecipeOfTheDay();
+    
+   
     const collectionCards = document.querySelectorAll('.collection-card');
     collectionCards.forEach(card => {
         card.addEventListener('click', (event) => {
-            event.preventDefault(); // Impede que o link padrão (#) funcione
+            event.preventDefault(); 
             
-            const query = card.dataset.searchQuery; // Pega a busca do atributo "data-search-query"
-            elements.searchInput.value = query; // Coloca o texto da busca no campo de pesquisa
-            performSearch(); // Executa a busca
+            const query = card.dataset.searchQuery; 
+            elements.searchInput.value = query; 
+            performSearch(); 
             
-            // Rola a página suavemente até os resultados
             document.getElementById('recipesContainer').scrollIntoView({ behavior: 'smooth' });
         });
     });
