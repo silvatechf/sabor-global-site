@@ -323,6 +323,7 @@ function renderRecipes(hits, clearContainer = true) {
     elements.recipesContainer.insertAdjacentHTML('beforeend', recipesHtml);
 }
 
+// --- INÍCIO DA CORREÇÃO ---
 function handlePagination(nextUrl) {
     if (nextUrl) {
         // Extrai apenas os parâmetros (tudo depois do "?") do link completo
@@ -334,6 +335,7 @@ function handlePagination(nextUrl) {
         elements.loadMoreButton.dataset.nextQuery = ""; // Limpa os parâmetros
     }
 }
+// --- FIM DA CORREÇÃO ---
 
 
 function toggleFilterPanel() {
@@ -359,11 +361,14 @@ elements.hamburgerButton.addEventListener('click', () => {
 
 // --- INÍCIO DA CORREÇÃO ---
 elements.loadMoreButton.addEventListener('click', (e) => {
-    const nextQuery = e.currentTarget.dataset.nextQuery; 
+    const nextQuery = e.currentTarget.dataset.nextQuery; // Pega os parâmetros que salvamos
     if (nextQuery) {
+        // Monta a URL para a nossa API interna (/api/recipes)
         const localApiUrl = `${API_URL}?${nextQuery}`;
-        fetchRecipes(localApiUrl, false); 
+        fetchRecipes(localApiUrl, false); // Chama a função de busca com o link correto
+    }
 });
+// --- FIM DA CORREÇÃO ---
 
 document.addEventListener('DOMContentLoaded', () => {
     const initialSearches = ["chicken","fish", "Salada", "Sopa", "Carne", "Meat", "Peixe", "pasta"];
@@ -372,16 +377,17 @@ document.addEventListener('DOMContentLoaded', () => {
     performSearch();
     fetchRecipeOfTheDay();
     
-   
+    // LÓGICA PARA OS CARDS DE COLEÇÕES
     const collectionCards = document.querySelectorAll('.collection-card');
     collectionCards.forEach(card => {
         card.addEventListener('click', (event) => {
-            event.preventDefault(); 
+            event.preventDefault(); // Impede que o link padrão (#) funcione
             
-            const query = card.dataset.searchQuery; 
-            elements.searchInput.value = query; 
-            performSearch(); 
+            const query = card.dataset.searchQuery; // Pega a busca do atributo "data-search-query"
+            elements.searchInput.value = query; // Coloca o texto da busca no campo de pesquisa
+            performSearch(); // Executa a busca
             
+            // Rola a página suavemente até os resultados
             document.getElementById('recipesContainer').scrollIntoView({ behavior: 'smooth' });
         });
     });
