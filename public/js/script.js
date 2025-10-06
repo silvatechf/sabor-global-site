@@ -344,7 +344,7 @@ elements.hamburgerButton.addEventListener('click', () => {
     elements.mobileMenu.classList.toggle('hidden');
 });
 
-// --- INÍCIO DA CORREÇÃO ---
+
 elements.loadMoreButton.addEventListener('click', (e) => {
     const nextQuery = e.currentTarget.dataset.nextQuery; // Pega os parâmetros que salvamos
     if (nextQuery) {
@@ -353,7 +353,7 @@ elements.loadMoreButton.addEventListener('click', (e) => {
         fetchRecipes(localApiUrl, false); // Chama a função de busca com o link correto
     }
 });
-// --- FIM DA CORREÇÃO ---
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const initialSearches = ["chicken","fish", "Salada", "Sopa", "Carne", "Meat", "Peixe", "pasta"];

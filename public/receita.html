@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sabor Global</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-green': '#10B981',
+                        'secondary-blue': '#3B82F6',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <header class="bg-white shadow-lg sticky top-0 z-20">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="/" class="text-3xl font-extrabold text-primary-green tracking-tight">Sabor Global</a>
+                
+                <nav>
+                    <a href="/" class="text-gray-600 hover:text-primary-green font-medium transition duration-150 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Voltar para a busca
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-12">
+        <div id="recipe-details-container" class="bg-white p-6 md:p-10 rounded-2xl shadow-xl hidden">
+            
+            <div class="mb-8 border-b pb-6">
+                <h1 id="recipe-title" class="text-4xl md:text-5xl font-extrabold text-gray-900"></h1>
+                <p id="recipe-source" class="text-lg text-gray-500 mt-2"></p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <div class="lg:col-span-1">
+                    <img id="recipe-image" src="" alt="" class="rounded-xl w-full object-cover mb-6 shadow-md">
+                    <div id="recipe-stats" class="grid grid-cols-3 gap-4 text-center">
+                        </div>
+                    <div id="recipe-tags" class="mt-6 flex flex-wrap gap-2">
+                        </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-4 border-primary-green pb-2 inline-block">Ingredientes</h2>
+                    <ul id="recipe-ingredients" class="list-disc list-inside space-y-3 text-lg text-gray-700 mb-10">
+                        </ul>
+                    <a id="recipe-external-link" href="#" target="_blank" class="inline-block bg-secondary-blue text-white font-bold py-4 px-8 rounded-lg hover:bg-blue-600 transition duration-300 shadow-lg">
+                        Ver Modo de Preparo no Site Original &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <p id="loading-message" class="text-center text-gray-600 text-xl font-medium mt-20">Carregando receita...</p>
+
+    </main>
+
+    <script src="js/receita.js"></script>
+</body>
+</html>
