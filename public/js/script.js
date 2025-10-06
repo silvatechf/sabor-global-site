@@ -232,6 +232,7 @@ function renderRecipes(hits, clearContainer = true) {
     }
     
     if (hits.length === 0 && clearContainer) {
+        
         const searchTerm = elements.searchInput.value;
         const emptyStateHTML = `
             <div class="col-span-full bg-white p-8 md:p-12 rounded-2xl shadow-lg text-center border border-slate-200">
@@ -241,31 +242,10 @@ function renderRecipes(hits, clearContainer = true) {
                     </svg>
                 </div>
                 <h3 class="mt-6 text-2xl font-bold text-slate-900">Nenhum resultado para "${searchTerm}"</h3>
-                <p class="mt-2 text-md text-slate-600">Não encontramos o que você procura. Que tal tentar estas dicas?</p>
-                <div class="mt-8 text-left max-w-lg mx-auto border-t border-slate-200 pt-8">
-                    <ul class="space-y-5 text-slate-700">
-                        <li class="flex items-start gap-3">
-                            <svg class="h-6 w-6 text-primary-green flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                            <span>Verifique se não há <strong class="font-semibold">erros de digitação</strong> na sua busca.</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg class="h-6 w-6 text-primary-green flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2h1a2 2 0 002-2v-1a2 2 0 012-2h1.945M7.7 9.3l.16-.29M16.3 9.3l-.16-.29M12 12l.01 0" /></svg>
-                            <span>Busque termos em <strong class="font-semibold">inglês</strong>, ex: <code class="bg-slate-100 p-1 rounded">salmon</code> ao invés de SALMÃO, ou <code class="bg-slate-100 p-1 rounded">pasta</code> ao invés de MACARRÃO, etc.</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg class="h-6 w-6 text-primary-green flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414A1 1 0 0012 15.586V21a1 1 0 01-1 1H4a1 1 0 01-1-1v-2.586a1 1 0 00-.293-.707l-6.414-6.414A1 1 0 013 6.586V4z" /></svg>
-                            <span>Confira os <button id="check-filters-link" class="text-secondary-blue font-bold underline hover:text-blue-700">filtros ativos</button>, eles podem estar muito restritivos.</span>
-                        </li>
-                    </ul>
-                </div>
+                <p class="mt-2 text-md text-slate-600">Não encontramos o que você procura...</p>
             </div>
         `;
         elements.recipesContainer.innerHTML = emptyStateHTML;
-        elements.messageArea.classList.add('hidden');
-        document.getElementById('check-filters-link').addEventListener('click', () => {
-            elements.filterPanel.classList.remove('hidden');
-            elements.filterPanel.scrollIntoView({ behavior: 'smooth' });
-        });
         return;
     }
     
@@ -273,16 +253,18 @@ function renderRecipes(hits, clearContainer = true) {
 
     const recipesHtml = hits.map(hit => {
         const { recipe } = hit;
-        const servings = recipe.yield || 'N/A';
         
+        
+        const recipeId = recipe.uri.split('#recipe_')[1]; // Extrai o ID da receita
+        
+
+        const servings = recipe.yield || 'N/A';
         const cuisineOriginal = recipe.cuisineType?.[0].replace(/\b\w/g, l => l.toUpperCase()) || 'Global';
         const cuisineTraduzida = dicionarioDeRotulos[cuisineOriginal] || cuisineOriginal;
-
         const allLabels = [...recipe.dietLabels, ...recipe.healthLabels];
         const uniqueLabels = [...new Set(allLabels)].filter(label => !['mediterranean'].includes(label.toLowerCase()));
         const displayLabels = uniqueLabels.slice(0, 3);
         const caloriesPerServing = Math.round(recipe.calories / servings);
-
         let calorieColorClass = 'text-gray-700';
         if (caloriesPerServing <= 400) calorieColorClass = 'text-green-600';
         else if (caloriesPerServing <= 700) calorieColorClass = 'text-orange-500';
@@ -290,9 +272,11 @@ function renderRecipes(hits, clearContainer = true) {
 
         return `
             <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col group border hover:border-emerald-500">
-                <a href="${recipe.url}" target="_blank" class="block overflow-hidden rounded-t-2xl">
+                
+                <a href="receita.html?id=${recipeId}" class="block overflow-hidden rounded-t-2xl">
                     <img src="${recipe.image}" alt="${recipe.label}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                 </a>
+
                 <div class="p-5 flex flex-col flex-grow">
                     <h4 class="text-lg font-bold text-gray-800 mb-3 truncate" title="${recipe.label}">${recipe.label}</h4>
                     <div class="flex items-center justify-between text-sm text-gray-600 mb-4 border-b pb-3">
@@ -315,7 +299,8 @@ function renderRecipes(hits, clearContainer = true) {
                             return `<span class="text-xs font-semibold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">${labelTraduzida.replace(/-/g, ' ')}</span>`;
                         }).join('')}
                     </div>
-                    <a href="${recipe.url}" target="_blank" class="mt-auto w-full text-center bg-secondary-blue text-white py-2.5 rounded-lg hover:bg-blue-600 transition font-semibold shadow-md hover:shadow-lg">Ver Receita</a>
+
+                    <a href="receita.html?id=${recipeId}" class="mt-auto w-full text-center bg-secondary-blue text-white py-2.5 rounded-lg hover:bg-blue-600 transition font-semibold shadow-md hover:shadow-lg">Ver Receita</a>
                 </div>
             </div>
         `;
@@ -323,7 +308,7 @@ function renderRecipes(hits, clearContainer = true) {
     elements.recipesContainer.insertAdjacentHTML('beforeend', recipesHtml);
 }
 
-// --- INÍCIO DA CORREÇÃO ---
+
 function handlePagination(nextUrl) {
     if (nextUrl) {
         // Extrai apenas os parâmetros (tudo depois do "?") do link completo
@@ -335,7 +320,7 @@ function handlePagination(nextUrl) {
         elements.loadMoreButton.dataset.nextQuery = ""; // Limpa os parâmetros
     }
 }
-// --- FIM DA CORREÇÃO ---
+
 
 
 function toggleFilterPanel() {
